@@ -1,0 +1,52 @@
+Proyecto Noticias
+Se recomienda estructurar el proyecto de la siguiente forma:
+1.- Crear una carpeta pages y mover la carpeta de las tabs dentro de la carpeta pages
+2.- Corregir las rutas de los pats de los modulos respectivos
+3.- Crear una carpeta para componentes (componentes que se reutilizaran)
+4.- Crear la carpeta de servicios
+5.- Crear la carpeta para interfaces
+
+
+Estudiar la lógica de los videos de la sección 8: Aplicación de Noticas
+113.- Centralizar las peticiones - Refactorización
+114.- Mantener en Memoria los Articulos
+
+In App Browser:
+Instalar las siguientes librerías
+Instalar:
+npm i cordova-in-app-update
+npm install @awesome-cordova-plugins/in-app-update
+
+En el appModule importat lo siguiente librería:
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+
+en el mismo archivo en la sección de provedores agregar el plugin
+providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    InAppBrowser,
+  ],
+
+Para usarlo en calquier componente es necesario importarlo:
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+
+Para preparar el proyecto para Android: (se tiene que tener instalado Android studio, ya que este comnando abre el editor de Android)
+ionic capacitor build android
+
+ionic capacitor run android -l --host=10.2.122.24
+
+ionic build
+ionic capacitor add Android
+
+Recosntruir proyecto de
+https://capacitorjs.com/docs/android/troubleshooting#recreating-your-project
+
+Ahrehar dependencias según indiquen los errores, en nuestro caso aplico para el archivo: build-gradle(Module:capacitor-cordoba-android-plugins)
+implementation 'com.google.android.material:material:1.12.0'
+
+Solucionar errores del debug de gradle.
+En el archivo gradle.properties modificar o agregar (según sea el caso) las siguientes líneas:
+org.gradle.jvmargs=-Xmx4608m // Se modifico el valor de esta propiedad
+android.useAndroidX=true // Ya existía esta variable
+android.enableJetifier=true // Se agrego esta propiedad
+https://developer.android.com/build/releases/past-releases/agp-7-2-0-release-notes?hl=es-419
+
+Eliminar carpetas: rm -rf carpeta/

@@ -19,7 +19,15 @@
     </ion-segment-button>
   </ion-segment>
 
-    <app-articulos [articles]="articles"></app-articulos>
+  <app-articulos [articles]="articles"></app-articulos>
+
+  <ion-infinite-scroll
+    threshold="25%"
+    position="bottom" 
+    (ionInfinite)="loadData()">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
  
 </ion-content>

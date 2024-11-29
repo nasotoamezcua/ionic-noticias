@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
 
+
 const apiKey = environment.apiKey;
 const apiUrl = environment.apiUrl;
 
@@ -31,11 +32,13 @@ export class NewsService {
 
   getTopheadlines() : Observable<Article[]>{
 
+    return this.getTopHeadLinesByCategory('business')
+
+     /*
     return this.executeQuery<NewsResponse>(`/top-headlines?category=business`)
       .pipe( map( ({articles}) => articles ) 
     );
-  
-      /*
+     
     return this.http.get<NewsResponse>(`/top-headlines?category=business`, {
       params: { apiKey: apiKey }
     }).pipe(
@@ -52,14 +55,14 @@ export class NewsService {
       return this.getArticlesByCategory(category);
     }
 
-    //Si quiere cargar los que estan en memoria ::: loadMore = false
+    //Si existe la categoria, regresa sus articulos
     if(this.articlesByCategoryAndPage[category]) {
-      return of(this.articlesByCategoryAndPage[category].articles); //of contruye un observable basado en el argumento o respuesta que se tiene
+      return of(this.articlesByCategoryAndPage[category].articles); //of construye un observable basado en el argumento o respuesta que se tiene
     }
 
-    return this.executeQuery<NewsResponse>(`/top-headlines?category=${category}`)
-      .pipe( map( ({articles}) => articles ) 
-    );
+    //Si no existe a un la categoria
+    return this.getArticlesByCategory(category);
+    
 
     /*
     return this.http.get<NewsResponse>(`https://newsapi.org/v2/top-headlines?country=us&category=${ category }`, {
@@ -73,11 +76,13 @@ export class NewsService {
 
  getArticlesByCategory(category: string) : Observable<Article[]> {
 
+  //console.log(Object.keys(this.articlesByCategoryAndPage));
+
   //Si ya ecxiste la categoria seleccionada
   if(Object.keys(this.articlesByCategoryAndPage).includes(category) ){
     //this.articlesByCategoryAndPage[category].page +=1
   }else{
-    //No Existe
+    //Si No Existe la acategoria seleccionada, se inicia los valores del objeto articlesByCategoryAndPage
     this.articlesByCategoryAndPage[category] = {
       page:0,
       articles:[]
@@ -86,13 +91,15 @@ export class NewsService {
 
   const page = this.articlesByCategoryAndPage[category].page +1 ;
 
-  return this.executeQuery<NewsResponse>(`top-headlines?category=${ category }&page=${page}`)
+  return this.executeQuery<NewsResponse>(`/top-headlines?category=${ category }&page=${page}`)
     .pipe(
       //map( resp => resp.articles)
       map( ({articles}) => {
 
-        if(articles.length === 0) return this.articlesByCategoryAndPage[category].articles;
+        //Solo entra aqui si la categoria no existe
+        if(articles.length === 0) return this.articlesByCategoryAndPage[category].articles; //this.articlesByCategoryAndPage[category].articles = articles; 
 
+        //Solo se ejecuta este codigo si se desean cargar mas notcias de una categoria especifica
         this.articlesByCategoryAndPage[category] = {
           page:page,
           articles: [...this.articlesByCategoryAndPage[category].articles, ...articles] //Muestra articulos anteriores y añade al final los nuevos artiulos
